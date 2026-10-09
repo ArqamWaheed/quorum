@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: quorum
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npx mastra build
+    startCommand: node .mastra/output/index.mjs
+    healthCheckPath: /health
+    envVars:
+      - { key: MASTRA_HOST, value: 0.0.0.0 }
+      - { key: QUORUM_MODEL, value: google/gemma-4-31b-it }
+      - { key: TOOL_MODE, value: native }
+      - { key: MONGODB_DB, value: quorum }
+      - { key: GOOGLE_API_KEY, sync: false }
+      - { key: MONGODB_URI, sync: false }
+      - { key: QUORUM_SHARED_SECRET, sync: false }
+      - { key: PUBLIC_URL, sync: false }

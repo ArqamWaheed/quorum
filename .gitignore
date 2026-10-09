@@ -1,0 +1,28 @@
+# dependencies / build output
+node_modules/
+.mastra/
+dist/
+*.tsbuildinfo
+
+# secrets
+.env
+.env.*
+!.env.example
+
+# local Temporal dev server state
+.temporal/
+
+# local-only planning + research (never public)
+playbook/
+research/
+*.research.md
+
+# private group data (chat exports, real rosters)
+chat.txt
+*-chat.txt
+exports/
+
+# tooling
+.claude/settings.local.json
+*.log
+.DS_Store

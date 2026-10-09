@@ -1,0 +1,37 @@
+{
+  "name": "quorum",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A group-chat member that holds the clock until your friends are actually outside.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "scripts": {
+    "dev": "mastra dev",
+    "build": "mastra build",
+    "start": "node .mastra/output/index.mjs",
+    "worker": "tsx --env-file=.env src/temporal/worker.ts",
+    "bot": "tsx --env-file=.env src/bot/telegram.ts",
+    "smoke": "tsx --env-file=.env scripts/smoke-gemma.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mastra/core": "^1.75.0",
+    "@mastra/memory": "^1.36.0",
+    "@mastra/mongodb": "^1.22.0",
+    "@temporalio/activity": "^1.24.0",
+    "@temporalio/client": "^1.24.0",
+    "@temporalio/worker": "^1.24.0",
+    "@temporalio/workflow": "^1.24.0",
+    "mongodb": "^7.7.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "mastra": "^1.33.0",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3"
+  }
+}
