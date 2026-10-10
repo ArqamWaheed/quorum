@@ -17,7 +17,7 @@ async function overpass(q: string): Promise<Spot[]> {
       const r = await fetch(url, {
         method: 'POST', body: new URLSearchParams({ data: q }),
         headers: { 'user-agent': 'quorum-bot (github.com/ArqamWaheed/quorum)' },
-        signal: AbortSignal.timeout(40_000),
+        signal: AbortSignal.timeout(25_000),
       });
       if (!r.ok) throw new Error(`overpass ${r.status} at ${new URL(url).host}`);
       const seen = new Set<string>();
@@ -36,7 +36,31 @@ const km = (a: number, b: number, c: number, d: number) => {
 };
 const GENERIC = /^(park|garden|playground|viewpoint|view point|nature reserve|green belt|green area|ground)$/i;
 
-// Fallback when every Overpass mirror is down: Photon (komoot), a geocoder over the same OSM data.
+const JUNK = /#|\bH\s*\d|\bSt\.?\s*\d|house|\bID$/i; // mis-tagged addresses
+const pause = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+// Fallback when Overpass is down: Nominatim (same OSM data, ranked by importance; policy: max 1 req/s).
+async function nominatim(lat: number, lon: number, radiusM: number): Promise<Spot[]> {
+  const dLat = radiusM / 111_000, dLon = radiusM / (111_000 * Math.cos((lat * Math.PI) / 180));
+  const viewbox = [lon - dLon, lat + dLat, lon + dLon, lat - dLat].map((x) => x.toFixed(4)).join(',');
+  const found = new Map<string, Spot & { importance: number }>();
+  for (const q of ['park', 'parks', 'nature reserve', 'national park', 'viewpoint', 'hiking trail']) {
+    const u = new URL('https://nominatim.openstreetmap.org/search');
+    u.search = new URLSearchParams({ q, viewbox, bounded: '1', limit: '20', format: 'jsonv2', 'accept-language': 'en' }).toString();
+    const r = await fetch(u, { headers: { 'user-agent': 'quorum-bot (github.com/ArqamWaheed/quorum)' }, signal: AbortSignal.timeout(15_000) });
+    if (r.ok) for (const x of (await r.json()) as any[]) {
+      const name = String(x.name ?? '').trim();
+      if (!name || GENERIC.test(name) || JUNK.test(name) || found.has(name)) continue;
+      if (!['leisure', 'tourism', 'boundary', 'route', 'natural'].includes(x.category)) continue;
+      found.set(name, { name, kind: x.type, lat: Number(x.lat), lon: Number(x.lon), importance: x.importance ?? 0 });
+    }
+    await pause(1_100);
+  }
+  if (!found.size) throw new Error('nominatim: no named spots');
+  return [...found.values()].sort((a, b) => b.importance - a.importance).map(({ importance, ...s }) => s);
+}
+
+// Last fallback: Photon (komoot), a geocoder over the same OSM data.
 async function photon(lat: number, lon: number, radiusM: number): Promise<Spot[]> {
   const tags = [['park', 'leisure:park'], ['nature reserve', 'leisure:nature_reserve'], ['viewpoint', 'tourism:viewpoint'], ['trail', 'route:hiking']];
   const seen = new Set<string>();
@@ -68,7 +92,9 @@ export async function places(lat: number, lon: number, radiusM = 25_000): Promis
   const q = `[out:json][timeout:35];(nwr${a}[leisure~"^(park|nature_reserve)$"][name];` +
             `nwr${a}[route=hiking][name];nwr${a}[tourism=viewpoint][name];);out center tags 60;`;
   try {
-    const spots = await overpass(q).catch((e) => { console.error(e.message, '→ trying photon'); return photon(lat, lon, radiusM); });
+    const spots = await overpass(q)
+      .catch((e) => { console.error(e.message, '→ trying nominatim'); return nominatim(lat, lon, radiusM); })
+      .catch((e) => { console.error(e.message, '→ trying photon'); return photon(lat, lon, radiusM); });
     mem.set(key, spots);
     await col?.updateOne({ _id: key }, { $set: { spots, fetchedAt: new Date() } }, { upsert: true }).catch(() => undefined);
     return spots;
