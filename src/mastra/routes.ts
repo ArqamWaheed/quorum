@@ -4,12 +4,12 @@ import { PlanOption, type RosterLine, type Home, type Option } from '../shared/s
 import { db } from '../shared/db';
 import { fmtLocal } from '../shared/time';
 import { forecast } from './tools/weather';
-import { draftOptions, rainAt, toolMode } from './draft';
+import { draftOptions, isTransient, rainAt, toolMode } from './draft';
 import { landingPage, notFoundPage, planPage, tryPage } from './pages';
 
 const ok = (c: any) => !!process.env.QUORUM_SHARED_SECRET && c.req.header('x-quorum-secret') === process.env.QUORUM_SHARED_SECRET;
 const agent = (c: any, id: string) => c.get('mastra').getAgentById(id);
-const isRateLimit = (e: unknown) => /429|quota|rate.?limit|resource.?exhausted/i.test(String((e as Error)?.message ?? e));
+const isRateLimit = isTransient;
 
 // Gemma's 429s become 503 so the Temporal activity retries; real bugs stay 500.
 function fail(c: any, e: unknown) {
@@ -150,7 +150,7 @@ export const routes = [
         return c.json({ ...res, placeName: home.name });
       } catch (e) {
         console.error(e);
-        if (isRateLimit(e)) return c.json({ error: 'The free Gemma quota is resting. Try again in a minute, or watch the video.' }, 503);
+        if (isRateLimit(e)) return c.json({ error: 'Gemma’s free tier is busy right now. Try again in a minute, or watch the video.' }, 503);
         return c.json({ error: 'Drafting failed. Try a different place or date.' }, 500);
       }
     },

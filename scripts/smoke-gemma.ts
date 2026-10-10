@@ -5,7 +5,7 @@ import { quorumTry, quorumNoTools } from '../src/mastra/agents/quorum';
 import { PlanOptions, type RosterLine } from '../src/shared/schema';
 import { places } from '../src/mastra/tools/places';
 import { forecast } from '../src/mastra/tools/weather';
-import { rosterText } from '../src/mastra/draft';
+import { rosterText, isTransient } from '../src/mastra/draft';
 
 const arg = (k: string) => { const i = process.argv.indexOf(`--${k}`); return i > 0 ? process.argv[i + 1] : undefined; };
 const mode = arg('mode') === 'prefetch' ? 'prefetch' : 'native';
@@ -32,7 +32,7 @@ const agent = mode === 'prefetch' ? quorumNoTools : quorumTry;
 const model = process.env.QUORUM_MODEL ?? 'google/gemma-4-31b-it';
 console.log(`model ${model} · mode ${mode} · ${cases.length} cases`);
 
-type Row = { i: number; city: string; date: string; tools: number; valid: boolean; invented: number; ms: number; err?: string };
+type Row = { i: number; city: string; date: string; tools: number; valid: boolean; invented: number; ms: number; apiRetries: number; err?: string };
 const rows: Row[] = [];
 for (const [i, c] of cases.entries()) {
   const spots = await places(c.lat, c.lon).catch(() => []);
@@ -40,15 +40,19 @@ for (const [i, c] of cases.entries()) {
   let prompt = `Outing date ${c.date}. Home lat ${c.lat}, lon ${c.lon}.\nRoster:\n${rosterText(roster)}\n`;
   if (mode === 'prefetch') prompt += `WEATHER ${JSON.stringify(await forecast(c.lat, c.lon, c.date).catch(() => []))}\nSPOTS ${JSON.stringify(spots.slice(0, 25))}\n`;
   prompt += 'Draft the options.';
-  const t0 = Date.now();
+  let t0 = Date.now(), apiRetries = 0;
+  const gen = async (): Promise<any> => {
+    try { return await agent.generate(prompt, { maxSteps: 6, structuredOutput: { schema: PlanOptions, jsonPromptInjection: true } }); }
+    catch (e) { if (isTransient(e) && apiRetries < 2) { apiRetries++; await new Promise((r) => setTimeout(r, 5000)); t0 = Date.now(); return gen(); } throw e; }
+  };
   try {
-    const r = await agent.generate(prompt, { maxSteps: 6, structuredOutput: { schema: PlanOptions, jsonPromptInjection: true } });
+    const r = await gen();
     const tools = r.steps?.reduce((k: number, s: any) => k + (s.toolCalls?.length ?? 0), 0) ?? 0;
     const opts = (r.object as any)?.options;
     const valid = PlanOptions.safeParse(r.object).success;
-    rows.push({ i, city: c.city, date: c.date, tools, valid, invented: valid ? opts.filter((o: any) => !names.has(o.where)).length : NaN, ms: Date.now() - t0 });
+    rows.push({ i, city: c.city, date: c.date, tools, valid, invented: valid ? opts.filter((o: any) => !names.has(o.where)).length : NaN, ms: Date.now() - t0, apiRetries });
   } catch (e) {
-    rows.push({ i, city: c.city, date: c.date, tools: 0, valid: false, invented: NaN, ms: Date.now() - t0, err: String((e as Error).message).slice(0, 80) });
+    rows.push({ i, city: c.city, date: c.date, tools: 0, valid: false, invented: NaN, ms: Date.now() - t0, apiRetries, err: String((e as Error).message).slice(0, 80) });
   }
   console.log(JSON.stringify(rows.at(-1)));
   if (i < cases.length - 1) await new Promise((r) => setTimeout(r, pause));
@@ -59,6 +63,7 @@ const invented = rows.reduce((k, r) => k + (Number.isNaN(r.invented) ? 0 : r.inv
 const ms = rows.map((r) => r.ms).sort((a, b) => a - b);
 const median = ms[Math.floor(ms.length / 2)] ?? 0;
 const threshold = Math.ceil(cases.length * 0.8);
-console.log(`\n${model} · ${mode}: validity ${pass}/${cases.length} · invented places ${invented} · median ${(median / 1000).toFixed(1)} s`);
+const retries = rows.reduce((k, r) => k + r.apiRetries, 0);
+console.log(`\n${model} · ${mode}: validity ${pass}/${cases.length} · invented places ${invented} · median ${(median / 1000).toFixed(1)} s · Gemini 5xx/429 retries ${retries}`);
 if (mode === 'native') console.log(pass >= threshold ? 'Gate 1 PASS → TOOL_MODE=native' : 'Gate 1 FAIL → TOOL_MODE=prefetch');
 process.exit(0);

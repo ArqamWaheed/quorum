@@ -3,6 +3,10 @@ import { PlanOptions, type Option, type RosterLine, type Home } from '../shared/
 import { forecast, type Hour } from './tools/weather';
 import { places, type Spot } from './tools/places';
 
+// Gemini free tier: 429 = rate limit, 500 "Internal error encountered" / 503 = overloaded. Worth retrying.
+export const isTransient = (e: unknown) =>
+  /429|quota|rate.?limit|resource.?exhausted|internal error|overloaded|unavailable|503|500/i.test(String((e as Error)?.message ?? e));
+
 export const toolMode = () => (process.env.TOOL_MODE === 'prefetch' ? 'prefetch' : 'native');
 
 export const rosterText = (r: RosterLine[]) =>
@@ -54,17 +58,21 @@ export async function draftOptions(agent: Agent, args: {
 
   let options: Option[] = [];
   let toolCalls = 0;
-  try {
-    const res = await agent.generate(prompt, {
-      maxSteps: 6,
-      ...(args.memory ? { memory: args.memory } : {}),
-      structuredOutput: { schema: PlanOptions, jsonPromptInjection: true },
-    });
-    toolCalls = res.steps?.reduce((n: number, s: any) => n + (s.toolCalls?.length ?? 0), 0) ?? res.toolCalls?.length ?? 0;
-    options = (res.object as any)?.options ?? [];
-  } catch (e) {
-    console.error('draft generate failed:', (e as Error).message);
-    if (/429|quota|rate/i.test(String((e as Error).message))) throw e; // let Temporal retry rate limits
+  for (let attempt = 1; ; attempt++) {
+    try {
+      const res = await agent.generate(prompt, {
+        maxSteps: 6,
+        ...(args.memory ? { memory: args.memory } : {}),
+        structuredOutput: { schema: PlanOptions, jsonPromptInjection: true },
+      });
+      toolCalls = res.steps?.reduce((n: number, s: any) => n + (s.toolCalls?.length ?? 0), 0) ?? res.toolCalls?.length ?? 0;
+      options = (res.object as any)?.options ?? [];
+      break;
+    } catch (e) {
+      console.error(`draft generate attempt ${attempt} failed:`, (e as Error).message);
+      if (isTransient(e)) { if (attempt < 3) continue; throw e; } // Gemini 500s/429s: retry here, then let Temporal retry
+      break; // bad JSON etc.: fall through to validation + code fallback
+    }
   }
 
   const names = new Set(spots.map((s) => s.name));

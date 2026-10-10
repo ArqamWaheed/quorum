@@ -83,7 +83,7 @@ async function photon(lat: number, lon: number, radiusM: number): Promise<Spot[]
 
 // Real named spots near home from OpenStreetMap.
 export async function places(lat: number, lon: number, radiusM = 25_000): Promise<Spot[]> {
-  const key = `${lat.toFixed(3)},${lon.toFixed(3)},${radiusM}`;
+  const key = `${lat.toFixed(2)},${lon.toFixed(2)},${radiusM}`; // ~1 km: model-echoed coords still hit the cache
   if (mem.has(key)) return mem.get(key)!;
   const col = process.env.MONGODB_URI ? (await db()).collection<any>('places_cache') : undefined;
   const cached = await col?.findOne({ _id: key }).catch(() => null);
@@ -106,7 +106,7 @@ export async function places(lat: number, lon: number, radiusM = 25_000): Promis
 
 export const placesTool = createTool({
   id: 'places',
-  description: 'Named parks, hiking routes and viewpoints within radiusM of a lat/lon',
-  inputSchema: z.object({ lat: z.number(), lon: z.number(), radiusM: z.number().max(40_000).default(25_000) }),
-  execute: async ({ lat, lon, radiusM }) => ({ spots: (await places(lat, lon, radiusM)).slice(0, 25) }),
+  description: 'Named parks, hiking routes and viewpoints within 25 km of a lat/lon',
+  inputSchema: z.object({ lat: z.number(), lon: z.number() }), // fixed radius so the tool hits the same cache as code
+  execute: async ({ lat, lon }) => ({ spots: (await places(lat, lon)).slice(0, 25) }),
 });
