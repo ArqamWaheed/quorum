@@ -34,3 +34,12 @@ export async function ensureIndexes() {
   await d.collection('places_cache').createIndex({ fetchedAt: 1 }, { expireAfterSeconds: 30 * 86_400 });
   await d.collection('try_hits').createIndex({ at: 1 }, { expireAfterSeconds: 3_600 });
 }
+
+// Fail at startup with one clear message instead of on the first command.
+export function requireEnv(...keys: string[]) {
+  const missing = keys.filter((k) => !process.env[k]);
+  if (missing.length) {
+    console.error(`Missing in .env: ${missing.join(', ')}. See README "Run".`);
+    process.exit(1);
+  }
+}

@@ -9,11 +9,11 @@ import {
 } from 'discord.js';
 import { Client as TemporalClient, Connection, WorkflowNotFoundError } from '@temporalio/client';
 import { planOuting, vote, recap, type PlanInput } from '../temporal/workflows';
-import { db, ensureIndexes } from '../shared/db';
+import { db, ensureIndexes, requireEnv } from '../shared/db';
 import { fmtLocal, localToday, realSchedule, testSchedule } from '../shared/time';
 import type { Recap } from '../shared/schema';
 
-if (!process.env.DISCORD_BOT_TOKEN) throw new Error('DISCORD_BOT_TOKEN is not set');
+requireEnv('DISCORD_BOT_TOKEN', 'MONGODB_URI');
 
 const COMMANDS = [
   { name: 'help', description: 'How Quorum works' },
