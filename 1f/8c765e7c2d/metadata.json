@@ -1,0 +1,41 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "1f8c765e7c2d",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "package-lock.json",
+    "package.json",
+    "src/mastra/agents/quorum.ts",
+    "src/mastra/draft.ts",
+    "src/mastra/index.ts",
+    "src/mastra/memory.ts",
+    "src/mastra/pages.ts",
+    "src/mastra/routes.ts",
+    "src/mastra/tools/index.ts",
+    "src/mastra/tools/liveCheck.ts",
+    "src/mastra/tools/places.ts",
+    "src/mastra/tools/weather.ts",
+    "src/shared/db.ts",
+    "src/shared/model.ts",
+    "src/shared/schema.ts",
+    "src/shared/time.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/1f/8c765e7c2d/0/metadata.json",
+      "transcript": "/1f/8c765e7c2d/0/full.jsonl",
+      "compact_transcript": "/1f/8c765e7c2d/0/transcript.jsonl",
+      "content_hash": "/1f/8c765e7c2d/0/content_hash.txt",
+      "prompt": "/1f/8c765e7c2d/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 42,
+    "cache_creation_tokens": 97795,
+    "cache_read_tokens": 1801557,
+    "output_tokens": 24917,
+    "api_call_count": 21
+  }
+}
