@@ -57,6 +57,37 @@
         "label": "Skill: frontend-design:frontend-design",
         "default_collapsed": true
       }
+    },
+    {
+      "id": "claude-skill-toolu_01LMvmcBbDZ4SsR4P22X8kSy",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "claude-in-chrome"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "b30c991e2e77",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 354,
+        "end": 355,
+        "entry_ids": [
+          "0dacc83d-de1e-4920-8c79-12fec4ca046d"
+        ],
+        "tool_use_id": "toolu_01LMvmcBbDZ4SsR4P22X8kSy"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01LMvmcBbDZ4SsR4P22X8kSy"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: claude-in-chrome",
+        "default_collapsed": true
+      }
     }
   ],
   "initial_attribution": {
