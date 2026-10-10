@@ -183,10 +183,17 @@ async function onRecapButton(i: ButtonInteraction) {
 const discord = new Client({ intents: [GatewayIntentBits.Guilds] });
 discord.once(Events.ClientReady, async (c) => {
   const guild = process.env.DISCORD_GUILD_ID; // guild commands appear instantly; global ones can take up to an hour
-  if (guild) await c.application.commands.set(COMMANDS as any, guild);
-  else await c.application.commands.set(COMMANDS as any);
+  const invite = `https://discord.com/oauth2/authorize?client_id=${c.application.id}&scope=bot+applications.commands&permissions=19456`;
+  try {
+    if (guild) await c.application.commands.set(COMMANDS as any, guild);
+    else await c.application.commands.set(COMMANDS as any);
+  } catch (e: any) {
+    if (e.code !== 50001) throw e;
+    console.error(`The bot isn't in server ${guild} yet. Add it with this link, then restart npm run bot:\n${invite}`);
+    process.exit(1);
+  }
   console.log(`quorum bot ${c.user.tag} ready (${guild ? `guild ${guild}` : 'global'} commands)`);
-  console.log(`invite: https://discord.com/oauth2/authorize?client_id=${c.application.id}&scope=bot+applications.commands&permissions=19456`);
+  console.log(`invite: ${invite}`);
 });
 discord.on(Events.InteractionCreate, async (i) => {
   try {
