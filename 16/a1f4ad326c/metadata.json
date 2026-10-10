@@ -1,0 +1,34 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "16a1f4ad326c",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "package-lock.json",
+    "package.json",
+    "scripts/smoke-gemma.ts",
+    "scripts/test-workflow.ts",
+    "src/bot/telegram.ts",
+    "src/mastra/routes.ts",
+    "src/temporal/activities.ts",
+    "src/temporal/worker.ts",
+    "src/temporal/workflows.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/16/a1f4ad326c/0/metadata.json",
+      "transcript": "/16/a1f4ad326c/0/full.jsonl",
+      "compact_transcript": "/16/a1f4ad326c/0/transcript.jsonl",
+      "content_hash": "/16/a1f4ad326c/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 20,
+    "cache_creation_tokens": 21186,
+    "cache_read_tokens": 1312911,
+    "output_tokens": 21238,
+    "api_call_count": 10
+  }
+}
