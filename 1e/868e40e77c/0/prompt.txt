@@ -1,0 +1,17 @@
+<task-notification>
+<task-id>b4f0pxt1e</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/tmp/claude-1000/-home-arqamwd-theodinproject-repos-quorum/bb3d9c13-3d22-49c1-89ce-b48016c40305/tasks/b4f0pxt1e.output</output-file>
+<status>failed</status>
+<summary>Background command "Wait for smoke test to finish" failed with exit code 144</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>blo337oem</task-id>
+<tool-use-id>toolu_01FpHxsVzK411P96hktuPtRq</tool-use-id>
+<output-file>/tmp/claude-1000/-home-arqamwd-theodinproject-repos-quorum/bb3d9c13-3d22-49c1-89ce-b48016c40305/tasks/blo337oem.output</output-file>
+<status>completed</status>
+<summary>Background command "Run Gate 1 Gemma smoke test (native tools)" completed (exit code 0)</summary>
+</task-notification>

@@ -1,0 +1,29 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "1e868e40e77c",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "scripts/smoke-gemma.ts",
+    "src/mastra/draft.ts",
+    "src/mastra/routes.ts",
+    "src/mastra/tools/places.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/1e/868e40e77c/0/metadata.json",
+      "transcript": "/1e/868e40e77c/0/full.jsonl",
+      "compact_transcript": "/1e/868e40e77c/0/transcript.jsonl",
+      "content_hash": "/1e/868e40e77c/0/content_hash.txt",
+      "prompt": "/1e/868e40e77c/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 18,
+    "cache_creation_tokens": 13021,
+    "cache_read_tokens": 2261173,
+    "output_tokens": 8612,
+    "api_call_count": 9
+  }
+}
