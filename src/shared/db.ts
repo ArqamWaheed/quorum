@@ -31,5 +31,6 @@ export async function ensureIndexes() {
   await d.collection('members').createIndex({ chatId: 1 });
   await d.collection('plans').createIndex({ chatId: 1, status: 1 });
   await d.collection('polls').createIndex({ planId: 1 });
+  await d.collection('places_cache').createIndex({ fetchedAt: 1 }, { expireAfterSeconds: 30 * 86_400 });
   await d.collection('try_hits').createIndex({ at: 1 }, { expireAfterSeconds: 3_600 });
 }

@@ -16,7 +16,8 @@
     "bot": "tsx --env-file=.env src/bot/telegram.ts",
     "smoke": "tsx --env-file=.env scripts/smoke-gemma.ts",
     "typecheck": "tsc --noEmit",
-    "test:workflow": "tsx scripts/test-workflow.ts"
+    "test:workflow": "tsx scripts/test-workflow.ts",
+    "places": "tsx --env-file=.env scripts/warm-places.ts"
   },
   "dependencies": {
     "@mastra/core": "^1.75.0",
