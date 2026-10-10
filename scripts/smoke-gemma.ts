@@ -29,7 +29,7 @@ const dates = [1, 2, 3, 4, 5].map((d) => new Date(Date.now() + d * 864e5).toISOS
 const cases = homes.flatMap((h) => dates.map((date) => ({ ...h, date }))).slice(0, n);
 
 const agent = mode === 'prefetch' ? quorumNoTools : quorumTry;
-const model = process.env.QUORUM_MODEL ?? 'google/gemma-4-31b-it';
+const model = process.env.QUORUM_MODEL ?? 'google/gemma-4-26b-a4b-it';
 console.log(`model ${model} · mode ${mode} · ${cases.length} cases`);
 
 type Row = { i: number; city: string; date: string; tools: number; valid: boolean; invented: number; ms: number; apiRetries: number; err?: string };

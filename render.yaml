@@ -9,7 +9,7 @@ services:
     envVars:
       - { key: NODE_VERSION, value: 22.22.0 }
       - { key: MASTRA_HOST, value: 0.0.0.0 }
-      - { key: QUORUM_MODEL, value: google/gemma-4-31b-it }
+      - { key: QUORUM_MODEL, value: google/gemma-4-26b-a4b-it }   # Gate 1: 8/8 valid, median 128 s (31B slower, more 5xx)
       - { key: TOOL_MODE, value: native }             # or 'prefetch' after Gate 1
       - { key: SEMANTIC_RECALL, value: "on" }
       - { key: MONGODB_DB, value: quorum }
