@@ -61,7 +61,7 @@ export function layout(title: string, body: string, description = 'Quorum plans 
 export function landingPage(videoUrl?: string, planId?: string) {
   return layout('Quorum', `
 <h1>Your group says “we should”. Quorum makes sure you go.</h1>
-<p>Quorum is a member of a friend group’s Telegram chat. It drafts two or three small outings that respect everyone’s limits, runs the poll, waits for enough people to say yes, checks the weather at 05:30 and posts the reminder at 06:00.</p>
+<p>Quorum is a member of a friend group’s Discord server. It drafts two or three small outings that respect everyone’s limits, runs the poll, waits for enough people to say yes, checks the weather at 05:30 and posts the reminder at 06:00.</p>
 <p class="quiet">The waiting is done by a Temporal workflow, so a crashed laptop or a sleeping server only delays a step. Plans are drafted by Gemma 4 through a Mastra agent. The group’s limits and past outings live in MongoDB Atlas.</p>
 <h2>See it</h2>
 <ul>
@@ -140,7 +140,7 @@ ${opts ? `<h2>The options</h2>${opts}` : ''}
 }
 
 export function notFoundPage() {
-  return layout('Plan not found', `<h1>No plan with that link.</h1><p>Check the link from the Telegram message, or <a href="/try">draft a plan for your own group</a>.</p>`);
+  return layout('Plan not found', `<h1>No plan with that link.</h1><p>Check the link in the Discord message, or <a href="/try">draft a plan for your own group</a>.</p>`);
 }
 
 export function tryPage() {

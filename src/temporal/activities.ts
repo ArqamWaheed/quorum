@@ -61,35 +61,46 @@ export async function storeRecap(p: PlanInput, plan: Option, recaps: Recap[]) {
   await render(p.planId, '/quorum/remember', { chatId: p.chatId, name: 'The group', text, thread: `recap:${p.chatId}:${p.date}` }, 30_000);
 }
 
-// ---- Telegram ----
-async function tg(method: string, body: object) {
-  const r = await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/${method}`, {
-    method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(15_000),
+// ---- Discord (REST only; the gateway client lives in the bot) ----
+const API = 'https://discord.com/api/v10';
+async function discord(method: 'POST' | 'PATCH', path: string, body: object) {
+  const r = await fetch(`${API}${path}`, {
+    method, body: JSON.stringify(body), signal: AbortSignal.timeout(15_000),
+    headers: { 'content-type': 'application/json', authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}` },
   });
-  const j: any = await r.json();
-  if (!j.ok) throw new Error(`${method}: ${j.description}`);
-  return j.result;
+  if (r.status === 401 || r.status === 403 || r.status === 404)
+    throw ApplicationFailure.create({ type: 'BadRequest', message: `discord ${r.status}: ${await r.text()}`, nonRetryable: true });
+  if (!r.ok) throw new Error(`discord ${r.status}: ${await r.text()}`); // 429/5xx → Temporal retries
+  return r.json() as Promise<any>;
 }
+const say = (channelId: string, content: string, components?: object[]) =>
+  discord('POST', `/channels/${channelId}/messages`, { content: content.slice(0, 2000), allowed_mentions: { parse: [] }, ...(components ? { components } : {}) });
 
 const optionLine = (o: Option, i: number) =>
-  `${i + 1}. ${o.title}\n   ${o.where}, ${o.start} for ${o.durationH} h. ${o.weatherNote}` +
-  (o.shapedBy.length ? `\n   Shaped by: ${o.shapedBy.join('; ')}` : '');
+  `**${i + 1}. ${o.title}**\n${o.where}, ${o.start} for ${o.durationH} h. ${o.weatherNote}` +
+  (o.shapedBy.length ? `\nShaped by: ${o.shapedBy.join('; ')}` : '');
+
+const voteMenu = (planId: string, options: Option[], disabled = false) => [{
+  type: 1, components: [{
+    type: 3, custom_id: `vote:${planId}`, placeholder: 'Pick every option you can make', min_values: 0, max_values: options.length + 1, disabled,
+    options: [...options.map((o, i) => ({ label: `${i + 1}. ${o.title}`.slice(0, 100), value: String(i), description: `${o.where}, ${o.start}`.slice(0, 100) })),
+      { label: "Can't make it", value: String(options.length) }],
+  }],
+}];
 
 export async function sendPoll(planId: string, chatId: string, options: Option[]) {
   const polls = (await db()).collection<any>('polls');
   if (await polls.findOne({ planId })) return; // already sent (activity retry)
-  await tg('sendMessage', { chat_id: chatId, text: `Here are the options:\n\n${options.map(optionLine).join('\n\n')}` });
-  const m = await tg('sendPoll', {
-    chat_id: chatId, question: 'Which one are we actually doing? Tap all you can make.',
-    options: [...options.map((o) => ({ text: o.title.slice(0, 100) })), { text: "Can't make it" }],
-    is_anonymous: false, allows_multiple_answers: true, // non-anonymous → poll_answer updates
-  });
-  await polls.insertOne({ _id: m.poll.id, planId, chatId, messageId: m.message_id });
+  const m = await say(chatId, `Here are the options:\n\n${options.map(optionLine).join('\n\n')}\n\nWhich ones can you actually make? Votes: ${options.map(() => 0).join(' / ')}`,
+    voteMenu(planId, options));
+  await polls.insertOne({ _id: m.id, planId, chatId, messageId: m.id });
 }
 
 export async function closePoll(planId: string) {
   const poll = await (await db()).collection<any>('polls').findOne({ planId });
-  if (poll) await tg('stopPoll', { chat_id: poll.chatId, message_id: poll.messageId }).catch(() => undefined);
+  const plan = await (await plans()).findOne({ _id: planId }, { projection: { options: 1 } });
+  if (poll && plan?.options)
+    await discord('PATCH', `/channels/${poll.chatId}/messages/${poll.messageId}`, { components: voteMenu(planId, plan.options, true) }).catch(() => undefined);
 }
 
 export type AnnounceKind = 'locked' | 'no-quorum' | 'reminder' | 'recap-ask' | 'done' | 'draft-failed';
@@ -98,23 +109,27 @@ export async function announce(p: PlanInput, kind: AnnounceKind, data: any) {
   const col = await plans();
   const doc = await col.findOne({ _id: p.planId }, { projection: { announced: 1 } });
   if (doc?.announced?.includes(kind)) return; // already posted (activity retry)
-  const page = process.env.PUBLIC_URL ? `\n${process.env.PUBLIC_URL}/p/${p.planId}` : '';
+  const page = process.env.PUBLIC_URL ? `\n<${process.env.PUBLIC_URL}/p/${p.planId}>` : '';
   const o: Option | undefined = data.plan;
   const text = {
-    'locked': () => `Locked: ${o!.title}\n${o!.where}, ${p.date}, start ${o!.start}, about ${o!.durationH} h.\nVotes: ${data.counts.join(' / ')}.\nI'll check the weather at 05:30 and remind everyone at 06:00.${page}`,
-    'no-quorum': () => `The poll closed with ${data.count} yes for the best option, and we needed ${p.quorum}. No outing this time. /plan another date when you're ready.`,
+    'locked': () => `**Locked: ${o!.title}**\n${o!.where}, ${p.date}, start ${o!.start}, about ${o!.durationH} h.\nVotes: ${data.counts.join(' / ')}.\nI'll check the weather at 05:30 and remind everyone at 06:00.${page}`,
+    'no-quorum': () => `The poll closed with ${data.count} yes for the best option, and we needed ${p.quorum}. No outing this time. Use /plan for another date when you're ready.`,
     'reminder': () => (data.switched
-      ? `Good morning. Rain is likely on the original plan, so we're switching to:\n${o!.title}\n${o!.where}, start ${o!.start}.`
-      : `Good morning. Today: ${o!.title}\n${o!.where}, start ${o!.start}, about ${o!.durationH} h.`) +
+      ? `**Good morning.** Rain is likely on the original plan, so we're switching to:\n**${o!.title}**\n${o!.where}, start ${o!.start}.`
+      : `**Good morning.** Today: **${o!.title}**\n${o!.where}, start ${o!.start}, about ${o!.durationH} h.`) +
       (data.maxRain === undefined ? `\nI couldn't reach the forecast this morning, so check the sky before you leave.` : `\nRain chance during the outing: up to ${data.maxRain}%.`) + page,
-    'recap-ask': () => `Back home? Reply to this message with one line about how it went (a photo is welcome). I'll remember it for next time.`,
+    'recap-ask': () => `Back home? Tap **Add my recap** and write one line about how it went, or use /recap to attach a photo. I'll remember it for next time.`,
     'done': () => data.recaps ? `Saved ${data.recaps} recap${data.recaps > 1 ? 's' : ''}. That one actually happened.${page}` : `No recaps came in. I've closed this plan.${page}`,
     'draft-failed': () => `I couldn't draft options: the planning server didn't answer after many tries. Try /plan again later.`,
   }[kind]();
-  await tg('sendMessage', { chat_id: p.chatId, text, link_preview_options: { is_disabled: true } });
-  const status = kind === 'reminder' && data.switched ? 'reminder' : kind;
+  const everyone = kind === 'reminder' && process.env.DISCORD_PING_ROLE ? `<@&${process.env.DISCORD_PING_ROLE}> ` : '';
+  await discord('POST', `/channels/${p.chatId}/messages`, {
+    content: (everyone + text).slice(0, 2000),
+    allowed_mentions: { roles: everyone ? [process.env.DISCORD_PING_ROLE] : [] },
+    ...(kind === 'recap-ask' ? { components: [{ type: 1, components: [{ type: 2, style: 1, label: 'Add my recap', custom_id: `recap:${p.planId}` }] }] } : {}),
+  });
   await col.updateOne({ _id: p.planId }, {
-    $set: { status, ...(o ? { chosen: o } : {}), ...(data.counts ? { counts: data.counts } : {}) },
+    $set: { status: kind, ...(o ? { chosen: o } : {}), ...(data.counts ? { counts: data.counts } : {}) },
     $addToSet: { announced: kind },
   }, { upsert: true });
   await logEvent(p.planId, 'announce', kind);

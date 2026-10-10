@@ -1,9 +1,9 @@
 # Quorum
 
-A member of your friend group's Telegram chat that turns "we should go out" into an actual outing. A Mastra agent on Gemma 4 drafts plans around everyone's constraints, and a Temporal workflow holds the clock: poll, quorum deadline, weather re-check, morning reminder, recap.
+A member of your friend group's Discord server that turns "we should go out" into an actual outing. A Mastra agent on Gemma 4 drafts plans around everyone's constraints, and a Temporal workflow holds the clock: poll, quorum deadline, weather re-check, morning reminder, recap.
 
 ```
-Telegram ──► laptop: bot + Temporal dev server + worker ──HTTPS──► Render: Mastra agent (Gemma 4) ──► MongoDB Atlas
+Discord ──► laptop: bot + Temporal dev server + worker ──HTTPS──► Render: Mastra agent (Gemma 4) ──► MongoDB Atlas
                                                                     tools: Open-Meteo, OpenStreetMap
 ```
 
@@ -14,7 +14,7 @@ Telegram ──► laptop: bot + Temporal dev server + worker ──HTTPS──�
 
 ## Run
 
-Needs Node 22, the [Temporal CLI](https://docs.temporal.io/cli), a Google AI Studio key, an Atlas M0 cluster and a Telegram bot token.
+Needs Node 22, the [Temporal CLI](https://docs.temporal.io/cli), a Google AI Studio key, an Atlas M0 cluster and a Discord bot token.
 
 ```bash
 npm install
@@ -32,9 +32,16 @@ npm run worker
 npm run bot
 ```
 
-In the Telegram group: `/join`, `/me no car`, then `/plan test` for a run compressed into ~10 minutes, or `/plan 2026-10-11 4` for the real thing (poll closes the night before at `POLL_CLOSE`, weather check 05:30, reminder 06:00, recap at `OUTING_END`).
+In your Discord channel: `/join`, `/me limit:no car`, then `/plan date:test` for a run compressed into ~10 minutes, or `/plan date:2026-10-11 people:4` for the real thing (poll closes the night before at `POLL_CLOSE`, weather check 05:30, reminder 06:00, recap at `OUTING_END`).
 
 Check the workflow without any external service: `./scripts/run-local.sh`, then `npm run test:workflow`.
+
+### Set up the Discord bot
+
+1. [discord.com/developers/applications](https://discord.com/developers/applications) → New Application → **Bot** → Reset Token → put it in `.env` as `DISCORD_BOT_TOKEN`. Leave every privileged intent off.
+2. Discord → Settings → Advanced → Developer Mode on. Right-click your server → Copy Server ID → `DISCORD_GUILD_ID`.
+3. `npm run bot` prints an invite link (scopes `bot applications.commands`; permissions: View Channel, Send Messages, Embed Links). Open it and add the bot to your server.
+4. Use one channel for the group: the roster and plans belong to the channel where people `/join`.
 
 ### Deploy the agent to Render
 
@@ -44,7 +51,7 @@ Render Free sleeps after 15 idle minutes. The 05:30 weather check usually hits a
 
 ## Privacy
 
-Only people who `/join` are stored. `/forget` deletes your limits and recaps. The bot runs with Telegram privacy mode on and is not an admin, so it only sees commands and replies addressed to it. The public plan page shows counts only, unless `PUBLIC_NAMES=on` because the group agreed. Photos stay as Telegram file IDs and are never re-hosted. Messages sent to the bot are processed by Google's Gemini API free tier, which may use them to improve Google's products; run `QUORUM_MODEL=ollama:gemma4:e4b` to keep everything local.
+Only people who `/join` are stored. `/forget` deletes your limits and recaps. The bot connects with only the `Guilds` intent (no Message Content), so it never sees ordinary messages: only slash commands and taps on its own buttons. The public plan page shows counts only, unless `PUBLIC_NAMES=on` because the group agreed. Recap photos stay as Discord attachment links and are never re-hosted. Messages sent to the bot are processed by Google's Gemini API free tier, which may use them to improve Google's products; run `QUORUM_MODEL=ollama:gemma4:e4b` to keep everything local.
 
 ## License
 
