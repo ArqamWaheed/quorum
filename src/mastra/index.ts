@@ -1,6 +1,9 @@
 import { Mastra } from '@mastra/core';
+import { quorumAgent, quorumNoTools, quorumTry } from './agents/quorum';
+import { routes } from './routes';
 
-// Render entry. Agents and routes are registered here as they are built.
+// Render entry. Render: MASTRA_HOST=0.0.0.0 (Mastra defaults to localhost).
 export const mastra = new Mastra({
-  server: { host: process.env.MASTRA_HOST ?? 'localhost' }, // Render: MASTRA_HOST=0.0.0.0
+  agents: { quorumAgent, quorumNoTools, quorumTry },
+  server: { host: process.env.MASTRA_HOST ?? 'localhost', apiRoutes: routes },
 });
