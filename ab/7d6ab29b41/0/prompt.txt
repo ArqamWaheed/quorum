@@ -1,0 +1,11 @@
+Alright now issue telegram is banned in pakistan. We need to switch to discord bot
+
+---
+
+<task-notification>
+<task-id>bw5w1ausf</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/tmp/claude-1000/-home-arqamwd-theodinproject-repos-quorum/bb3d9c13-3d22-49c1-89ce-b48016c40305/tasks/bw5w1ausf.output</output-file>
+<status>completed</status>
+<summary>Background command "Install discord.js" completed (exit code 0)</summary>
+</task-notification>
