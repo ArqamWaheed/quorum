@@ -8,9 +8,10 @@ Quorum — a Discord server member (Mastra agent on Gemma 4) that plans one real
 TypeScript, Node 22, ESM · Mastra (agent, tools, memory, server) · Gemma 4 via Gemini API free tier (`QUORUM_MODEL`, Ollama swap) · Temporal OSS dev server + TS worker on the laptop · MongoDB Atlas M0 (+ Vector Search, max 3 indexes) · Render Free web service · Discord bot (discord.js gateway, Guilds intent only; REST from activities) · Open-Meteo · OSM Overpass · SerpApi (stretch) · Entire CLI (branch backend).
 
 ## Status snapshot
-- Phase: all code built (2026-10-10). Typecheck clean; `mastra build` + `mastra dev` serve /, /try, /p/:id, /health; `npm run test:workflow` 9/9 PASS (mock activities on local Temporal).
-- Blocked on user: `.env` keys (GOOGLE_API_KEY, MONGODB_URI, DISCORD_BOT_TOKEN, DISCORD_GUILD_ID, HOME_LAT/LON, secret), Render deploy.
-- Next: `npm run smoke` → Gate 1 → TOOL_MODE; `npm run places`; Render deploy; `/plan test` in a test group; tag `real-run-start` before the real run.
+- 2026-10-10: full stack runs locally (Temporal dev server, worker, `mastra dev` as stand-in for Render at RENDER_URL=localhost:4111, Discord bot `quorum#1044` in guild). Atlas connected; Mastra vector index READY on M0 (3072-d, 2 of 3 search indexes).
+- Gate 1 (native): 31B and 26B both 100% valid tool calls, 0 invented places on the rows so far, but slow: 110–475 s per draft on free tier (Gemini 500s happen; retried).
+- Blocked on user: Render login + blueprint secrets (agent can't sign in or type keys into fields).
+- Next: decide TOOL_MODE from latency (prefetch = 1 Gemma call vs 3); Render deploy → swap RENDER_URL/PUBLIC_URL; `/plan date:test` in Discord; tag `real-run-start`.
 
 ## Key decisions (why)
 - Temporal runs on the laptop, not Cloud — Cloud needs a card; dev server with `--db-filename` persists.
@@ -23,6 +24,8 @@ TypeScript, Node 22, ESM · Mastra (agent, tools, memory, server) · Gemma 4 via
 - Workflow degrades: draft fail → announce; recheck fail → keep plan, reminder says forecast unknown; recap store best effort.
 - Announce/sendPoll idempotent (plans.announced, polls by planId). Bot keeps live vote counts in plans for the page.
 - 2026-10-10: switched Telegram → Discord (Telegram banned in Pakistan). Slash commands, multi-select menu as the poll (native polls cap answers at 55 chars), recap via button→modal or /recap with photo. chatId = Discord channel id (roster is per channel). No Message Content intent = privacy-mode equivalent.
+- HOME = Islamabad (33.6844, 73.0479). Overpass down all day → Nominatim fallback gives real spots (Margalla Hills NP, Shakarparian, Rawal Lake Viewpoint); cached in Atlas.
+- Draft activity timeouts raised to 300 s fetch / 6 min startToClose; storeRecap 120 s on the long proxy. Recheck stays 30 s (cold-start retry demo); its Gemma fallback is aborted at 20 s → code picks least-rain alternative.
 - Plan page shows counts only unless PUBLIC_NAMES=on. /try uses `quorum-try` agent (no memory, no SerpApi), 5/h/IP.
 
 ## Open questions / TODO
