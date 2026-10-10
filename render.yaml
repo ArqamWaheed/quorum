@@ -7,11 +7,19 @@ services:
     startCommand: node .mastra/output/index.mjs
     healthCheckPath: /health
     envVars:
+      - { key: NODE_VERSION, value: 22.22.0 }
       - { key: MASTRA_HOST, value: 0.0.0.0 }
       - { key: QUORUM_MODEL, value: google/gemma-4-31b-it }
-      - { key: TOOL_MODE, value: native }
+      - { key: TOOL_MODE, value: native }             # or 'prefetch' after Gate 1
+      - { key: SEMANTIC_RECALL, value: "on" }
       - { key: MONGODB_DB, value: quorum }
+      - { key: GROUP_UTC_OFFSET, value: "+05:00" }
+      - { key: RAIN_LIMIT, value: "50" }
+      - { key: PUBLIC_NAMES, value: "off" }
       - { key: GOOGLE_API_KEY, sync: false }
       - { key: MONGODB_URI, sync: false }
-      - { key: QUORUM_SHARED_SECRET, sync: false }
+      - { key: QUORUM_SHARED_SECRET, sync: false }   # same value in your laptop .env
       - { key: PUBLIC_URL, sync: false }
+      - { key: VIDEO_URL, sync: false }
+      - { key: FEATURED_PLAN_ID, sync: false }
+      - { key: SERPAPI_KEY, sync: false }

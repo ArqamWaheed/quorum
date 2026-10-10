@@ -85,17 +85,18 @@ export function planPage(p: PlanView, fmt: (ms: number) => string, publicNames: 
   const status = p.status ?? 'drafting';
   const reached = (s: string) => ORDER.indexOf(status) >= ORDER.indexOf(s);
   const ev = p.events ?? [];
+  const stamp = (at: Date | string) => { const d = new Date(at); return `${fmt(d.getTime()).slice(11)}:${String(d.getUTCSeconds()).padStart(2, '0')}`; };
   const attempts = (type: string) => {
     const xs = ev.filter((e) => e.type === type);
     if (!xs.length) return '';
-    return `<ul class="attempts">${xs.map((e) => `<li class="${/failed/.test(e.detail) ? 'bad' : ''}">${esc(new Date(e.at).toISOString().slice(11, 19))} UTC: ${esc(e.detail)}</li>`).join('')}</ul>`;
+    return `<ul class="attempts">${xs.map((e) => `<li class="${/failed/.test(e.detail) ? 'bad' : ''}">${esc(stamp(e.at))}: ${esc(e.detail)}</li>`).join('')}</ul>`;
   };
   const s = p.schedule;
   const step = (cls: string, title: string, when: string, detail = '') =>
     `<li class="${cls}"><span class="blaze" aria-hidden="true"></span><strong>${title}</strong>${when ? ` <span class="when">${esc(when)}</span>` : ''}${detail}</li>`;
   const cls = (s0: string, next?: string) =>
     status === 'no-quorum' && ['locked', 'fallback', 'reminder', 'recap-ask', 'done'].includes(s0) ? 'skip'
-      : reached(next ?? '__') ? 'done' : reached(s0) ? (status === 'done' ? 'done' : 'now') : '';
+      : next && reached(next) ? 'done' : reached(s0) ? (status === 'done' ? 'done' : 'now') : '';
   const wx = p.weather;
   const steps = [
     step(cls('drafting', 'voting'), 'Options drafted', '', attempts('draftPlans')),
@@ -124,7 +125,7 @@ export function planPage(p: PlanView, fmt: (ms: number) => string, publicNames: 
   const opts = (p.options ?? []).map((o, i) => `
 <div class="opt${o.where === chosenWhere ? ' chosen' : ''}">
 <h3>${esc(o.title)}</h3>
-<p class="small">${esc(o.where)}, from ${esc(o.start)} for ${esc(o.durationH)} h${p.counts ? `, ${p.counts[i] ?? 0} votes` : ''}</p>
+<p class="small">${esc(o.where)}, from ${esc(o.start)} for ${esc(o.durationH)} h${p.counts ? `, ${p.counts[i] ?? 0} vote${(p.counts[i] ?? 0) === 1 ? '' : 's'}` : ''}</p>
 <p class="small quiet">${esc(o.weatherNote)}</p>${shaped(o)}</div>`).join('');
 
   const title = p.chosen?.title ?? (p.date ? `Outing on ${p.date}` : 'Outing');
