@@ -8,7 +8,7 @@ import type { Option, Recap, Vote } from '../shared/schema';
 const retry: RetryPolicy = { initialInterval: '5 seconds', backoffCoefficient: 2, maximumInterval: '2 minutes',
   maximumAttempts: 12, nonRetryableErrorTypes: ['BadRequest'] };
 const remote = wf.proxyActivities<typeof acts>({ startToCloseTimeout: '60 seconds', retry });
-const drafting = wf.proxyActivities<typeof acts>({ startToCloseTimeout: '150 seconds', retry }); // Gemma + tools is slow
+const drafting = wf.proxyActivities<typeof acts>({ startToCloseTimeout: '6 minutes', retry }); // Gemma free tier: 1–3.5 min per draft
 const chat = wf.proxyActivities<typeof acts>({ startToCloseTimeout: '20 seconds', retry: { maximumAttempts: 6 } });
 
 export const vote = wf.defineSignal<[Vote]>('vote');
@@ -74,7 +74,7 @@ export async function planOuting(p: PlanInput): Promise<string> {
   const want = Math.max(1, Math.min(p.quorum, t.count));
   await wf.condition(() => recaps.size >= want, until(p.recapUntil));
   if (recaps.size) {
-    try { await remote.storeRecap(p, plan, [...recaps.values()]); } catch { /* recaps are in Atlas; memory write is best effort */ }
+    try { await drafting.storeRecap(p, plan, [...recaps.values()]); } catch { /* recaps are in Atlas; memory write is best effort */ }
   }
   phase = 'done';
   await chat.announce(p, 'done', { recaps: recaps.size });

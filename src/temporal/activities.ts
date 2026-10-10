@@ -33,7 +33,7 @@ export async function draftPlans(p: PlanInput): Promise<Option[]> {
   const home = HOME();
   if (!Number.isFinite(home.lat) || !Number.isFinite(home.lon))
     throw ApplicationFailure.create({ type: 'BadRequest', message: 'HOME_LAT/HOME_LON not set', nonRetryable: true });
-  const res = await render(p.planId, '/quorum/draft', { chatId: p.chatId, date: p.date, roster: await roster(p.chatId), home }, 90_000);
+  const res = await render(p.planId, '/quorum/draft', { chatId: p.chatId, date: p.date, roster: await roster(p.chatId), home }, 300_000); // measured 110–200 s per draft on the free tier
   if (res.fallback || res.invented)
     await logEvent(p.planId, 'draftQuality', `${res.toolCalls} tool calls, ${res.invented} invented places dropped${res.fallback ? ', code-built fallback used' : ''} (${res.mode})`);
   await (await plans()).updateOne({ _id: p.planId }, {
@@ -58,7 +58,7 @@ export async function storeRecap(p: PlanInput, plan: Option, recaps: Recap[]) {
       update: { $set: { ...r, planId: p.planId, chatId: p.chatId, at: new Date() } }, upsert: true },
   })));
   const text = `Recap of "${plan.title}" at ${plan.where} on ${p.date}: ` + recaps.map((r) => `${r.name}: ${r.line}`).join(' | ');
-  await render(p.planId, '/quorum/remember', { chatId: p.chatId, name: 'The group', text, thread: `recap:${p.chatId}:${p.date}` }, 30_000);
+  await render(p.planId, '/quorum/remember', { chatId: p.chatId, name: 'The group', text, thread: `recap:${p.chatId}:${p.date}` }, 120_000);
 }
 
 // ---- Discord (REST only; the gateway client lives in the bot) ----
