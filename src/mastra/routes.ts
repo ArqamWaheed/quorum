@@ -95,7 +95,8 @@ export const routes = [
             `Pick the best of these alternatives, or adapt one (earlier start, shorter, covered spot) to dodge the rain. ` +
             `Keep "where" exactly as written in the alternatives or the chosen plan:\n${JSON.stringify([chosen, ...alternatives])}`,
             { memory: { resource: `chat:${chatId}`, thread: `plan:${chatId}:${date}` },
-              structuredOutput: { schema: PlanOption, jsonPromptInjection: true } });
+              structuredOutput: { schema: PlanOption, jsonPromptInjection: true },
+              abortSignal: AbortSignal.timeout(20_000) }); // keep the route under the activity's 30 s fetch timeout
           const o = res.object as Option | undefined;
           const known = new Set([chosen, ...alternatives].map((x) => x.where));
           if (o && known.has(o.where)) fallback = o;

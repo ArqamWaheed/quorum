@@ -15,7 +15,8 @@
     "worker": "tsx --env-file=.env src/temporal/worker.ts",
     "bot": "tsx --env-file=.env src/bot/telegram.ts",
     "smoke": "tsx --env-file=.env scripts/smoke-gemma.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:workflow": "tsx scripts/test-workflow.ts"
   },
   "dependencies": {
     "@mastra/core": "^1.75.0",
@@ -23,6 +24,7 @@
     "@mastra/mongodb": "^1.22.0",
     "@temporalio/activity": "^1.24.0",
     "@temporalio/client": "^1.24.0",
+    "@temporalio/common": "^1.24.0",
     "@temporalio/worker": "^1.24.0",
     "@temporalio/workflow": "^1.24.0",
     "mongodb": "^7.7.0",
