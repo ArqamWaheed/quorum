@@ -1,0 +1,33 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>
+.frame{width:1600px;height:900px;padding:60px 64px}
+.glow{width:1200px;height:1200px;right:-400px;top:-560px}
+h2{font-size:54px}.sub{font-size:24px;color:var(--muted);margin-top:14px}
+.row{position:absolute;left:64px;right:64px;top:250px;display:grid;grid-template-columns:1fr 1.2fr 1.3fr;gap:150px}
+.box{background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:28px 30px;position:relative}
+.box h3{font-size:32px;letter-spacing:-.02em}.box .where{font-family:"Geist Mono",monospace;font-size:18px;color:var(--accent);margin-top:6px}
+.box ul{list-style:none;margin-top:18px;display:flex;flex-direction:column;gap:12px;font-size:21px;color:var(--ink)}
+.box li small{display:block;color:var(--muted);font-size:17px;margin-top:2px}
+.arrow{position:absolute;top:96px;width:150px;right:-150px;height:2px;background:var(--accent)}
+.arrow::after{content:"";position:absolute;right:-2px;top:-7px;border:8px solid transparent;border-left:12px solid var(--accent)}
+.arrow span{position:absolute;bottom:10px;left:0;width:150px;text-align:center;font-family:"Geist Mono",monospace;font-size:15px;line-height:1.3;color:var(--muted)}
+.arrow.back{top:150px;background:none;border-top:2px dashed var(--muted)}
+.arrow.back::after{left:-2px;right:auto;top:-9px;border:8px solid transparent;border-right:12px solid var(--muted)}
+.arrow.back span{top:10px;bottom:auto}
+.db{position:absolute;left:64px;right:64px;bottom:60px;border:2px solid var(--line);border-radius:12px;padding:22px 30px;display:flex;align-items:baseline;gap:26px}
+.db b{font-size:28px}.db span{font-family:"Geist Mono",monospace;font-size:19px;color:var(--muted)}
+.legend{position:absolute;right:64px;top:70px;font-size:18px;color:var(--muted);text-align:right;line-height:1.8}
+.legend i{display:inline-block;width:40px;vertical-align:middle;margin-right:10px;border-top:2px solid var(--accent)}
+.legend i.d{border-top:2px dashed var(--muted)}
+</style></head><body><div class="frame">
+<div class="glow"></div>
+<h2>Four owners, one job each.</h2><p class="sub">Temporal owns time. Mastra and Gemma 4 own reasoning. Atlas owns memory. Render owns the public page.</p>
+<div class="legend"><div><i></i>request</div><div><i class="d"></i>result</div></div>
+<div class="row">
+<div class="box"><h3>Discord channel</h3><p class="where">the friends</p><ul><li>/join, /me no car<small>limits, stored per person</small></li><li>/plan 2026-10-17<small>starts one workflow</small></li><li>Vote menu, recap button<small>become workflow signals</small></li></ul>
+<div class="arrow"><span>slash<br>commands</span></div></div>
+<div class="box"><h3>Laptop</h3><p class="where">Temporal + worker + bot</p><ul><li>wait for quorum or the deadline<small>condition(), 22:00 the night before</small></li><li>sleep until 05:30, then 06:00<small>durable timers, survive kill -9</small></li><li>retry the agent server<small>5 s, x2 backoff, 12 attempts</small></li></ul>
+<div class="arrow"><span>HTTPS<br>45 s timeout</span></div><div class="arrow back"><span>options<br>weather verdict</span></div></div>
+<div class="box"><h3>Render (free)</h3><p class="where">Mastra agent on Gemma 4 26B</p><ul><li>weather tool<small>Open-Meteo hourly rain</small></li><li>places tool<small>OpenStreetMap, real names only</small></li><li>plan page /p/:id and /try<small>public, sleeps after 15 min</small></li></ul></div>
+</div>
+<div class="db"><b>MongoDB Atlas M0</b><span>members, plans + every attempt, polls, recaps, places cache, Mastra memory + Vector Search</span></div>
+</div></body></html>

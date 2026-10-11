@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>
+.frame{width:1600px;height:760px;padding:64px}
+.kicker{font-family:"Geist Mono",monospace;font-size:20px;color:var(--muted)}
+h2{font-size:60px;margin-top:14px}
+.grid{margin-top:56px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:2px solid var(--line)}
+.c{padding:34px 34px 0 0}.c+.c{padding-left:34px;border-left:2px solid var(--line)}
+.c h3{font-size:38px;letter-spacing:-.02em}
+.c .what{font-size:25px;color:var(--muted);margin-top:14px;line-height:1.4}
+.c .res{margin-top:28px;font-size:28px;line-height:1.4}
+.runs{display:flex;gap:10px;margin-top:22px}
+.runs span{font-family:"Geist Mono",monospace;font-size:20px;width:58px;height:42px;border-radius:8px;display:flex;align-items:center;justify-content:center;border:3px solid var(--fail);color:var(--fail)}
+.runs span.ok{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.log{font-family:"Geist Mono",monospace;font-size:18px;color:var(--muted);margin-top:18px;line-height:1.6}
+.log .bad{color:var(--fail)}
+.foot{position:absolute;left:64px;bottom:56px;font-size:24px;font-style:italic;color:var(--muted)}
+</style></head><body><div class="frame">
+<p class="kicker">11 October, compressed test run</p>
+<h2>Three ways I tried to break it.</h2>
+<div class="grid">
+<div class="c"><h3>Crash mid-poll</h3><p class="what">kill -9 the worker, then stop and restart the Temporal server.</p><p class="res">The plan came back in the voting step. My vote landed and it <span class="accent">locked</span>.</p></div>
+<div class="c"><h3>Agent server asleep</h3><p class="what">Stop the agent server right before the 05:30 weather check.</p>
+<div class="runs"><span>1</span><span>2</span><span>3</span><span>4</span><span class="ok">5</span></div>
+<p class="log"><span class="bad">15:55:14 attempt 1 failed</span><br><span class="bad">15:55:50 attempt 4 failed</span><br>15:56:56 attempt 5 ok, 25.9 s</p></div>
+<div class="c"><h3>Rain</h3><p class="what">Restart the agent server with the rain limit forced to 0%.</p><p class="res">The 06:00 reminder switched to <span class="accent">Visit Childrens Park</span> on its own.</p></div>
+</div>
+<p class="foot">Durable by design, not by luck: every step is a timer or a retry Temporal persisted.</p>
+</div></body></html>

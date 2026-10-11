@@ -1,0 +1,34 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css"><style>
+.frame{width:1600px;height:900px;display:grid;grid-template-columns:1fr 1fr}
+.side{padding:64px 64px;position:relative}
+.side+.side{border-left:2px solid var(--line);background:var(--surface)}
+.chip{display:inline-block;font-family:"Geist Mono",monospace;font-size:20px;padding:8px 14px;border-radius:8px;border:2px solid var(--line);color:var(--muted)}
+.side+.side .chip{border-color:var(--accent);background:var(--accent);color:var(--on-accent)}
+h2{font-size:52px;margin-top:22px}
+.msgs{margin-top:44px;display:flex;flex-direction:column;gap:26px}
+.msg{display:grid;grid-template-columns:90px 1fr;gap:18px;font-size:28px;align-items:baseline}
+.msg b{font-size:21px;color:var(--muted);font-weight:600}
+.msg small{font-family:"Geist Mono",monospace;font-size:17px;color:var(--muted);margin-left:10px}
+.dead{margin-top:46px;font-size:34px;font-weight:700;color:var(--fail)}
+.discord{margin-top:40px;background:#313338;border-radius:12px;padding:26px 28px;font-size:23px;line-height:1.45;color:#dbdee1}
+.discord .who{font-weight:600;color:#fff}.discord .app{font-size:13px;background:#5865f2;color:#fff;border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:2px}
+.discord .t{font-size:15px;color:#949ba4;margin-left:8px}
+.discord p{margin-top:6px}.discord strong{color:#fff}
+.discord+.discord{margin-top:18px}
+.foot{position:absolute;left:64px;bottom:56px;font-size:24px;color:var(--muted)}
+</style></head><body><div class="frame">
+<div class="side"><span class="chip">BEFORE: the group chat</span><h2>Everyone agrees. Nobody books it.</h2>
+<div class="msgs">
+<div class="msg"><b>Sara</b><span>we should go out this weekend<small>Mon</small></span></div>
+<div class="msg"><b>Omar</b><span>yes, we should<small>Wed</small></span></div>
+<div class="msg"><b>Lina</b><span>so are we going?<small>Fri 23:40</small></span></div>
+</div>
+<p class="dead">Sunday: nobody went.</p>
+<p class="foot">Nobody owns the clock, so nothing happens.</p></div>
+<div class="side"><span class="chip">AFTER: Quorum in the channel</span><h2>The bot keeps the time.</h2>
+<div class="discord"><span class="who">quorum</span><span class="app">APP</span><span class="t">3:29 PM</span>
+<p><strong>Locked: Morning stroll at Kachnar Park</strong><br>Kachnar Park, start 08:00, about 2 h. Votes: 1 / 0 / 0.<br>I'll check the weather at 05:30 and remind everyone at 06:00.</p></div>
+<div class="discord"><span class="who">quorum</span><span class="app">APP</span><span class="t">06:00</span>
+<p><strong>Good morning.</strong> Today: <strong>Morning stroll at Kachnar Park</strong><br>Kachnar Park, start 08:00, about 2 h. Rain chance up to 12%.</p></div>
+<p class="foot">Real messages from the 11 October run, timers compressed.</p></div>
+</div></body></html>
