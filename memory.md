@@ -8,10 +8,10 @@ Quorum — a Discord server member (Mastra agent on Gemma 4) that plans one real
 TypeScript, Node 22, ESM · Mastra (agent, tools, memory, server) · Gemma 4 via Gemini API free tier (`QUORUM_MODEL`, Ollama swap) · Temporal OSS dev server + TS worker on the laptop · MongoDB Atlas M0 (+ Vector Search, max 3 indexes) · Render Free web service · Discord bot (discord.js gateway, Guilds intent only; REST from activities) · Open-Meteo · OSM Overpass · SerpApi (stretch) · Entire CLI (branch backend).
 
 ## Status snapshot
-- 2026-10-10: full stack runs locally (Temporal dev server, worker, `mastra dev` as stand-in for Render at RENDER_URL=localhost:4111, Discord bot `quorum#1044` in guild). Atlas connected; Mastra vector index READY on M0 (3072-d, 2 of 3 search indexes).
-- Gate 1 (native): 31B and 26B both 100% valid tool calls, 0 invented places on the rows so far, but slow: 110–475 s per draft on free tier (Gemini 500s happen; retried).
-- Blocked on user: Render login + blueprint secrets (agent can't sign in or type keys into fields).
-- Next: decide TOOL_MODE from latency (prefetch = 1 Gemma call vs 3); Render deploy → swap RENDER_URL/PUBLIC_URL; `/plan date:test` in Discord; tag `real-run-start`.
+- 2026-10-11: two full Discord test runs passed (channel #general, guild quorum). Run 1: draft → vote → lock → weather → reminder → recap → done. Run 2 (simulation): kill -9 worker + restart Temporal server mid-poll → vote still locked; agent server stopped before weather check → recheck failed 4× (ECONNREFUSED), succeeded on attempt 5 after restart; RAIN_LIMIT=0 → reminder switched to fallback; no recap → "No recaps came in" → done. Evidence in docs/evidence/.
+- Tagged `real-run-start`: workflows.ts FROZEN. Real plan: 2026-10-17, quorum 1 (only one member joined).
+- Blocked on user: Render login + blueprint secrets. Until then RENDER_URL=localhost:4111 (no real cold start; simulated instead).
+- Laptop processes must stay up until the recap on 2026-10-17 (Temporal dev server, worker, mastra dev, bot).
 
 ## Key decisions (why)
 - Temporal runs on the laptop, not Cloud — Cloud needs a card; dev server with `--db-filename` persists.
@@ -26,6 +26,7 @@ TypeScript, Node 22, ESM · Mastra (agent, tools, memory, server) · Gemma 4 via
 - 2026-10-10: switched Telegram → Discord (Telegram banned in Pakistan). Slash commands, multi-select menu as the poll (native polls cap answers at 55 chars), recap via button→modal or /recap with photo. chatId = Discord channel id (roster is per channel). No Message Content intent = privacy-mode equivalent.
 - HOME = Islamabad (33.6844, 73.0479). Overpass down all day → Nominatim fallback gives real spots (Margalla Hills NP, Shakarparian, Rawal Lake Viewpoint); cached in Atlas.
 - Draft activity timeouts raised to 300 s fetch / 6 min startToClose; storeRecap 120 s on the long proxy. Recheck stays 30 s (cold-start retry demo); its Gemma fallback is aborted at 20 s → code picks least-rain alternative.
+- Test schedule: poll 7 min (drafting alone ~2 min). Recheck fetch 45 s.
 - Plan page shows counts only unless PUBLIC_NAMES=on. /try uses `quorum-try` agent (no memory, no SerpApi), 5/h/IP.
 
 ## Open questions / TODO
