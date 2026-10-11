@@ -190,7 +190,7 @@ export function landingPage(videoUrl?: string, planId?: string) {
 <section class="links">
   <a href="/try">Draft a plan for your own group</a>
   ${planId ? `<a href="/p/${esc(planId)}">See the plan page from the run</a>` : ''}
-  ${videoUrl ? `<a href="${esc(videoUrl)}">Watch the 60-second video</a>` : ''}
+  ${videoUrl ? `<a href="${esc(videoUrl)}">Watch the 30-second demo</a>` : ''}
 </section>
 <p class="nap">This page runs on Render's free tier, which sleeps after 15 idle minutes. If it took a minute to load, that was the same nap Quorum's workflow retries through.</p>`);
 }
