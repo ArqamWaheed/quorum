@@ -1,0 +1,7 @@
+<task-notification>
+<task-id>b0e4m9uql</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/tmp/claude-1000/-home-arqamwd-theodinproject-repos-quorum/f07a572e-28a9-4252-94fe-4d4bdfcebba1/tasks/b0e4m9uql.output</output-file>
+<status>completed</status>
+<summary>Background command "Start Discord bot" completed (exit code 0)</summary>
+</task-notification>
