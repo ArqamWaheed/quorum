@@ -45,7 +45,7 @@ export async function draftPlans(p: PlanInput): Promise<Option[]> {
 }
 
 export async function recheckWeather(p: PlanInput, chosen: Option, alternatives: Option[]) {
-  const res = await render(p.planId, '/quorum/recheck', { chatId: p.chatId, date: p.date, chosen, alternatives, home: HOME() }, 30_000);
+  const res = await render(p.planId, '/quorum/recheck', { chatId: p.chatId, date: p.date, chosen, alternatives, home: HOME() }, 45_000); // < Render's ~60 s wake, so a cold start still retries
   await (await plans()).updateOne({ _id: p.planId }, {
     $set: { weather: { checkedAt: new Date(), maxRain: res.maxRain, go: res.go }, ...(res.go ? {} : { chosen: res.fallback, status: 'fallback' }) },
   });
@@ -118,7 +118,8 @@ export async function announce(p: PlanInput, kind: AnnounceKind, data: any) {
     'reminder': () => (data.switched
       ? `**Good morning.** Rain is likely on the original plan, so we're switching to:\n**${o!.title}**\n${o!.where}, start ${o!.start}.`
       : `**Good morning.** Today: **${o!.title}**\n${o!.where}, start ${o!.start}, about ${o!.durationH} h.`) +
-      (data.maxRain === undefined ? `\nI couldn't reach the forecast this morning, so check the sky before you leave.` : `\nRain chance during the outing: up to ${data.maxRain}%.`) + page,
+      (data.maxRain === undefined ? `\nI couldn't reach the forecast this morning, so check the sky before you leave.`
+        : data.switched ? `\nThe original plan had up to ${data.maxRain}% rain in its window.` : `\nRain chance during the outing: up to ${data.maxRain}%.`) + page,
     'recap-ask': () => `Back home? Tap **Add my recap** and write one line about how it went, or use /recap to attach a photo. I'll remember it for next time.`,
     'done': () => data.recaps ? `Saved ${data.recaps} recap${data.recaps > 1 ? 's' : ''}. That one actually happened.${page}` : `No recaps came in. I've closed this plan.${page}`,
     'draft-failed': () => `I couldn't draft options: the planning server didn't answer after many tries. Try /plan again later.`,
