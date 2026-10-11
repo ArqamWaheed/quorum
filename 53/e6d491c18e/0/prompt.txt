@@ -1,0 +1,7 @@
+<task-notification>
+<task-id>b14icriry</task-id>
+<tool-use-id>toolu_01K3URxRuwN4i7dAF7w1RcrM</tool-use-id>
+<output-file>/tmp/claude-1000/-home-arqamwd-theodinproject-repos-quorum/f07a572e-28a9-4252-94fe-4d4bdfcebba1/tasks/b14icriry.output</output-file>
+<status>failed</status>
+<summary>Background command "Restart agent server with RAIN_LIMIT=0" failed with exit code 144</summary>
+</task-notification>
