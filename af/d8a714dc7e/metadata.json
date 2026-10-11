@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "afd8a714dc7e",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "src/mastra/pages.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/af/d8a714dc7e/0/metadata.json",
+      "transcript": "/af/d8a714dc7e/0/full.jsonl",
+      "compact_transcript": "/af/d8a714dc7e/0/transcript.jsonl",
+      "content_hash": "/af/d8a714dc7e/0/content_hash.txt",
+      "prompt": "/af/d8a714dc7e/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 100,
+    "cache_creation_tokens": 182567,
+    "cache_read_tokens": 22880114,
+    "output_tokens": 63607,
+    "api_call_count": 50
+  }
+}
