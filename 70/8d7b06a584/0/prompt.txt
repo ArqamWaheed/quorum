@@ -1,0 +1,79 @@
+Ivel ogged in btw
+
+---
+
+Moreover its supposed to be a product demo this is so bad this is not demonstrating the usecase at all. Leave the article for most of the technical jargon. The product demo vid should be 30s fast paced and just demonstrate the usecase better
+
+---
+
+Perfect now add sound effects and music and render it
+
+---
+
+<task-notification>
+<task-id>b11iw9ku4</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/tmp/claude-1000/-home-arqamwd-theodinproject-repos-quorum/7b151845-b1ea-4a57-ab21-5ab56d2e78ba/tasks/b11iw9ku4.output</output-file>
+<status>completed</status>
+<summary>Background command "Render the final MP4" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+Deploy render urself i permit u to paste env i have it logged in now. Create the devpost using ../articlewriting too and start generating th images and make the whole draft
+
+---
+
+create the draft on dev u have my browser and generate thumbnail for yt demo
+
+---
+
+<task-notification>
+<task-id>b94amxsgd</task-id>
+<tool-use-id>toolu_013Y3P5jiyXst8jKDa1kn5Ty</tool-use-id>
+<output-file>/tmp/claude-1000/-home-arqamwd-theodinproject-repos-quorum/7b151845-b1ea-4a57-ab21-5ab56d2e78ba/tasks/b94amxsgd.output</output-file>
+<status>failed</status>
+<summary>Background command "Serve the post body on localhost for the editor" failed with exit code 144</summary>
+</task-notification>
+
+---
+
+u ahve access to my browser so u can use flow naytime for image gen too so now think of that and do any changes taht u want
+
+---
+
+u ahve access to my browser so u can use flow naytime for image gen too so now think of that and do any changes taht u want and deployed on render btw so do finishing checks aswell
+
+---
+
+<task-notification>
+<task-id>bu4f8mpb4</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/tmp/claude-1000/-home-arqamwd-theodinproject-repos-quorum/7b151845-b1ea-4a57-ab21-5ab56d2e78ba/tasks/bu4f8mpb4.output</output-file>
+<status>completed</status>
+<summary>Background command "End-to-end /try draft on Render" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bglz53j1t</task-id>
+<tool-use-id>toolu_01879eEdtsbSeJwzPtcDzekC</tool-use-id>
+<output-file>/tmp/claude-1000/-home-arqamwd-theodinproject-repos-quorum/7b151845-b1ea-4a57-ab21-5ab56d2e78ba/tasks/bglz53j1t.output</output-file>
+<status>completed</status>
+<summary>Background command "Restart Discord bot with new schedule" completed (exit code -1)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bkewo11n8</task-id>
+<tool-use-id>toolu_01SdNicdJaeHHVAafkrEa8Xf</tool-use-id>
+<output-file>/tmp/claude-1000/-home-arqamwd-theodinproject-repos-quorum/7b151845-b1ea-4a57-ab21-5ab56d2e78ba/tasks/bkewo11n8.output</output-file>
+<status>completed</status>
+<summary>Background command "Start worker on final code" completed (exit code -1)</summary>
+</task-notification>
+
+---
+
+Continue
