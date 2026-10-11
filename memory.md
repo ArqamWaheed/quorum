@@ -10,7 +10,8 @@ TypeScript, Node 22, ESM · Mastra (agent, tools, memory, server) · Gemma 4 via
 ## Status snapshot
 - 2026-10-11: two full Discord test runs passed (channel #general, guild quorum). Run 1: draft → vote → lock → weather → reminder → recap → done. Run 2 (simulation): kill -9 worker + restart Temporal server mid-poll → vote still locked; agent server stopped before weather check → recheck failed 4× (ECONNREFUSED), succeeded on attempt 5 after restart; RAIN_LIMIT=0 → reminder switched to fallback; no recap → "No recaps came in" → done. Evidence in docs/evidence/.
 - Tagged `real-run-start`: workflows.ts FROZEN. Real plan: 2026-10-17, quorum 1 (only one member joined).
-- Blocked on user: Render login + blueprint secrets.
+- Render live: https://quorum-y649.onrender.com (PUBLIC_URL fixed, /try verified 72 s, 0 invented). Laptop .env RENDER_URL/PUBLIC_URL now point at Render.
+- DEV draft saved (unpublished) from articlewriting/hacktoberfest-week1-quorum.md; only TODO left: YouTube embed.
 - 2026-10-11 submission push: pages redesigned (Geist, one accent, no stripe cards). 30 s product demo rendered at ../quorum-video/renders/ (real Discord screenshots, HeyGen bgm + bundled SFX). DEV post draft: playbook/devto-post.md (git-ignored). Real outing not done before deadline; post says so. Until then RENDER_URL=localhost:4111 (no real cold start; simulated instead).
 - Laptop processes must stay up until the recap on 2026-10-17 (Temporal dev server, worker, mastra dev, bot).
 

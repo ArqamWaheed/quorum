@@ -2,6 +2,8 @@
 
 A member of your friend group's Discord server that turns "we should go out" into an actual outing. A Mastra agent on Gemma 4 drafts plans around everyone's constraints, and a Temporal workflow holds the clock: poll, quorum deadline, weather re-check, morning reminder, recap.
 
+**Live:** [quorum-y649.onrender.com](https://quorum-y649.onrender.com) (try it at `/try`; free tier, first load can take a minute). **Demo:** [docs/quorum-demo.mp4](docs/quorum-demo.mp4), 30 seconds.
+
 ```
 Discord ──► laptop: bot + Temporal dev server + worker ──HTTPS──► Render: Mastra agent (Gemma 4) ──► MongoDB Atlas
                                                                     tools: Open-Meteo, OpenStreetMap
