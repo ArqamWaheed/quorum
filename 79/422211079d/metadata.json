@@ -3,8 +3,26 @@
   "checkpoint_id": "79422211079d",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 1,
-  "files_touched": null,
+  "checkpoints_count": 2,
+  "files_touched": [
+    "docs/images/before-after.png",
+    "docs/images/cover-1000x420.jpg",
+    "docs/images/discord-options.png",
+    "docs/images/discord-rain-switch.png",
+    "docs/images/discord-reminder.png",
+    "docs/images/drills.png",
+    "docs/images/landing.jpg",
+    "docs/images/plan-page-retries.png",
+    "docs/images/src/Geist.woff2",
+    "docs/images/src/GeistMono.woff2",
+    "docs/images/src/base.css",
+    "docs/images/src/before-after.html",
+    "docs/images/src/cover.html",
+    "docs/images/src/drills.html",
+    "docs/images/src/system-flow.html",
+    "docs/images/system-flow.png",
+    "docs/images/temporal-pending-activity.jpg"
+  ],
   "sessions": [
     {
       "metadata": "/79/422211079d/0/metadata.json",
@@ -12,6 +30,13 @@
       "compact_transcript": "/79/422211079d/0/transcript.jsonl",
       "content_hash": "/79/422211079d/0/content_hash.txt",
       "prompt": "/79/422211079d/0/prompt.txt"
+    },
+    {
+      "metadata": "/79/422211079d/1/metadata.json",
+      "transcript": "/79/422211079d/1/full.jsonl",
+      "compact_transcript": "/79/422211079d/1/transcript.jsonl",
+      "content_hash": "/79/422211079d/1/content_hash.txt",
+      "prompt": ""
     }
   ],
   "token_usage": {
