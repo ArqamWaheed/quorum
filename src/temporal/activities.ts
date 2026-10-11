@@ -2,6 +2,7 @@ import { Context, ApplicationFailure } from '@temporalio/activity';
 import { db, roster, logEvent } from '../shared/db';
 import type { PlanInput } from './workflows';
 import type { Option, Recap } from '../shared/schema';
+import { fmtLocal } from '../shared/time';
 
 const HOME = () => ({ lat: Number(process.env.HOME_LAT), lon: Number(process.env.HOME_LON) });
 
@@ -112,7 +113,7 @@ export async function announce(p: PlanInput, kind: AnnounceKind, data: any) {
   const page = process.env.PUBLIC_URL ? `\n<${process.env.PUBLIC_URL}/p/${p.planId}>` : '';
   const o: Option | undefined = data.plan;
   const text = {
-    'locked': () => `**Locked: ${o!.title}**\n${o!.where}, ${p.date}, start ${o!.start}, about ${o!.durationH} h.\nVotes: ${data.counts.join(' / ')}.\nI'll check the weather at 05:30 and remind everyone at 06:00.${page}`,
+    'locked': () => `**Locked: ${o!.title}**\n${o!.where}, ${p.date}, start ${o!.start}, about ${o!.durationH} h.\nVotes: ${data.counts.join(' / ')}.\nI'll check the weather at ${fmtLocal(p.weatherCheckAt).slice(11)} and remind everyone at ${fmtLocal(p.reminderAt).slice(11)}.${page}`,
     'no-quorum': () => `The poll closed with ${data.count} yes for the best option, and we needed ${p.quorum}. No outing this time. Use /plan for another date when you're ready.`,
     'reminder': () => (data.switched
       ? `**Good morning.** Rain is likely on the original plan, so we're switching to:\n**${o!.title}**\n${o!.where}, start ${o!.start}.`

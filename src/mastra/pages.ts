@@ -130,7 +130,7 @@ export function planPage(p: PlanView, fmt: (ms: number) => string, publicNames: 
 
   const title = p.chosen?.title ?? (p.date ? `Outing on ${p.date}` : 'Outing');
   return layout(`Quorum plan ${p.date ?? ''}`.trim(), `
-<p class="quiet">${esc(p.date ?? '')}${p.quorum ? `, needs ${esc(p.quorum)} people` : ''}</p>
+<p class="quiet">${esc(p.date ?? '')}${p.quorum ? `, needs ${esc(p.quorum)} ${p.quorum === 1 ? 'person' : 'people'}` : ''}</p>
 <h1>${esc(title)}</h1>
 ${next ? `<div class="clock"><b>${esc(fmt(next[1] as number).slice(11))}</b><span>${esc(next[0])}, ${esc(fmt(next[1] as number).slice(0, 10))}</span></div>` : ''}
 <h2>Where it stands</h2>
