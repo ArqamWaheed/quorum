@@ -26,17 +26,22 @@ header.top .mark{font-weight:700;letter-spacing:-.01em;text-decoration:none;disp
 header.top .mark i{display:block;width:10px;height:16px;border-radius:2px;background:var(--accent)}
 header.top nav{display:flex;gap:20px;font-size:15px}
 header.top nav a{text-decoration:none;color:var(--muted)}
-header.top nav a:hover{color:var(--ink)}
-h1,h2,h3{letter-spacing:-.025em;line-height:1.08;margin:0}
+header.top nav a:hover,header.top nav a[aria-current]{color:var(--ink)}
+header.top nav a[aria-current]{text-decoration:underline}
+.skip{position:absolute;left:-999px;top:8px;background:var(--accent);color:var(--on-accent);padding:8px 12px;border-radius:var(--r);z-index:10}
+.skip:focus{left:8px}
+h1,h2,h3{letter-spacing:-.025em;line-height:1.08;margin:0;text-wrap:balance}
+p{text-wrap:pretty}
 h1{font-size:clamp(34px,5.2vw,56px);font-weight:700}
 h2{font-size:clamp(24px,3vw,32px);font-weight:700}
 h3{font-size:18px;font-weight:600;letter-spacing:-.01em}
-p{margin:0}
+p{margin:0;max-width:68ch}
 .muted{color:var(--muted)}
 .mono{font-family:var(--mono);font-size:.88em}
-.btn{display:inline-flex;align-items:center;justify-content:center;height:46px;padding:0 20px;border-radius:var(--r);font:600 16px var(--sans);text-decoration:none;cursor:pointer;border:2px solid var(--ink);white-space:nowrap}
+.btn{transition:background-color .2s,border-color .2s,transform .2s;display:inline-flex;align-items:center;justify-content:center;height:46px;padding:0 20px;border-radius:var(--r);font:600 16px var(--sans);text-decoration:none;cursor:pointer;border:2px solid var(--ink);white-space:nowrap}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
-.btn.ghost{background:transparent;color:var(--ink)}
+.btn.primary:hover{background:color-mix(in srgb,var(--accent) 85%,var(--ink))}
+.textlink{font-weight:600;align-self:center}
 .btn:active{transform:translateY(1px)}
 .btn[disabled]{opacity:.6;cursor:wait}
 
@@ -80,12 +85,12 @@ p{margin:0}
 .plan .meta{color:var(--muted)}
 .plan h1{margin-top:8px}
 .clock{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-top:24px}
-.clock b{font-family:var(--mono);font-weight:500;font-size:clamp(44px,11vw,64px);line-height:1;letter-spacing:-.04em}
+.clock b{font-variant-numeric:tabular-nums;font-family:var(--mono);font-weight:500;font-size:clamp(44px,11vw,64px);line-height:1;letter-spacing:-.04em}
 .plan h2{margin:48px 0 20px}
 .options{border-top:1px solid var(--line)}
 .option{padding:18px 0;border-bottom:1px solid var(--line)}
 .option .row{display:flex;justify-content:space-between;gap:16px;align-items:baseline}
-.option .votes{font-family:var(--mono);font-size:14px;color:var(--muted);white-space:nowrap}
+.option .votes{font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:14px;color:var(--muted);white-space:nowrap}
 .option .chosen{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;margin-left:8px}
 .option .chosen i{display:block;width:8px;height:12px;border-radius:2px;background:var(--accent)}
 .option p{font-size:15px;color:var(--muted);margin-top:4px}
@@ -126,18 +131,21 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;font-size:14px;color
 
 const REPO = 'https://github.com/ArqamWaheed/quorum';
 
-export function layout(title: string, body: string, description = 'Quorum plans one small outing for a friend group and keeps time until it happens.') {
+export function layout(title: string, body: string, description = 'Quorum plans one small outing for a friend group and keeps time until it happens.', current?: 'try') {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(title)}</title><meta name="description" content="${esc(description)}">
+<meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='4' y='1' width='8' height='14' rx='1.5' fill='%23e8b400'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>${css}</style></head><body>
+<a class="skip" href="#main">Skip to content</a>
 <div class="wrap">
 <header class="top"><a class="mark" href="/"><i aria-hidden="true"></i>Quorum</a>
-<nav><a href="/try">Try it</a><a class="hide-sm" href="${REPO}">Code</a></nav></header>
-<main>${body}</main>
-<footer>Open source under Apache-2.0. <a href="${REPO}">github.com/ArqamWaheed/quorum</a></footer>
+<nav><a href="/try"${current === 'try' ? ' aria-current="page"' : ''}>Try it</a><a class="hide-sm" href="${REPO}">Code</a></nav></header>
+<main id="main">${body}</main>
+<footer>Open source under Apache-2.0. <a href="${REPO}">github.com/ArqamWaheed/quorum</a>. <a href="${REPO}#privacy">Privacy</a></footer>
 </div></body></html>`;
 }
 
@@ -161,7 +169,7 @@ export function landingPage(videoUrl?: string, planId?: string) {
   <div>
     <h1>Group plans die when nobody holds the clock.</h1>
     <p class="lede">Quorum is a Discord member that drafts the outing, runs the poll, checks the rain and sends the reminder.</p>
-    <div class="ctas"><a class="btn primary" href="/try">Try it</a><a class="btn ghost" href="${REPO}">Read the code</a></div>
+    <div class="ctas"><a class="btn primary" href="/try">Try it</a><a class="textlink" href="${REPO}">Read the code</a></div>
   </div>
   <figure class="preview rise" style="margin:0">
     ${rehearsal}
@@ -260,7 +268,8 @@ export function notFoundPage() {
 }
 
 export function tryPage() {
-  const tomorrow = new Date(Date.now() + 864e5).toISOString().slice(0, 10);
+  const day = (n: number) => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10);
+  const today = day(0), tomorrow = day(1), maxDate = day(14);
   return layout('Try Quorum', `
 <section class="try">
   <div>
@@ -277,7 +286,7 @@ Tom: wants a view</textarea>
         <input id="place" name="place" required value="Islamabad" aria-describedby="place-help">
         <span class="help" id="place-help">A city, or coordinates like 33.68, 73.05.</span></div>
       <div class="field"><label for="date">Date</label>
-        <input id="date" name="date" type="date" required value="${tomorrow}" aria-describedby="date-help">
+        <input id="date" name="date" type="date" required value="${tomorrow}" min="${today}" max="${maxDate}" aria-describedby="date-help">
         <span class="help" id="date-help">Within the next 14 days, as far as the forecast goes.</span></div>
       <div><button class="btn primary" id="go" type="submit">Draft options</button></div>
     </form>
@@ -298,5 +307,5 @@ out.innerHTML='<h2>Options near '+esc(j.placeName)+'</h2><div class="options" st
 +'<p class="stats">'+j.toolCalls+' tool calls in '+(j.ms/1000).toFixed(0)+' s'+(j.invented?'. Dropped '+j.invented+' invented place'+(j.invented>1?'s':''):'')+(j.fallback?'. Some options were built by code because the model answer was unusable':'')+'.</p>';
 }catch(err){out.innerHTML='<p class="error">'+esc(err.message)+'</p>'}
 go.disabled=false;go.textContent='Draft options';});
-</script>`);
+</script>`, undefined, 'try');
 }
