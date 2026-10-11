@@ -1,0 +1,23 @@
+Ivel ogged in btw
+
+---
+
+Moreover its supposed to be a product demo this is so bad this is not demonstrating the usecase at all. Leave the article for most of the technical jargon. The product demo vid should be 30s fast paced and just demonstrate the usecase better
+
+---
+
+Perfect now add sound effects and music and render it
+
+---
+
+<task-notification>
+<task-id>b11iw9ku4</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/tmp/claude-1000/-home-arqamwd-theodinproject-repos-quorum/7b151845-b1ea-4a57-ab21-5ab56d2e78ba/tasks/b11iw9ku4.output</output-file>
+<status>completed</status>
+<summary>Background command "Render the final MP4" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+Deploy render urself i permit u to paste env i have it logged in now. Create the devpost using ../articlewriting too and start generating th images and make the whole draft
