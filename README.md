@@ -32,7 +32,7 @@ npm run worker
 npm run bot
 ```
 
-In your Discord channel: `/join`, `/me limit:no car`, then `/plan date:test` for a run compressed into ~10 minutes, or `/plan date:2026-10-11 people:4` for the real thing (poll closes the night before at `POLL_CLOSE`, weather check 05:30, reminder 06:00, recap at `OUTING_END`).
+In your Discord channel: `/join`, `/me limit:no car`, then `/plan date:test` for a run compressed into ~15 minutes, or `/plan date:2026-10-11 people:4` for the real thing (poll closes the night before at `POLL_CLOSE`, weather check 05:30, reminder 06:00, recap at `OUTING_END`).
 
 Check the workflow without any external service: `./scripts/run-local.sh`, then `npm run test:workflow`.
 

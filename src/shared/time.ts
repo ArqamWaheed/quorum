@@ -28,8 +28,9 @@ export function realSchedule(date: string): Schedule {
   };
 }
 
-// `/plan test`: the same workflow compressed into minutes.
+// `/plan test`: the same workflow compressed into minutes. Drafting alone takes ~2 min on the
+// Gemma free tier, so the poll stays open 7 min to leave ~5 min for voting.
 export function testSchedule(now = Date.now()): Schedule {
   const min = 60_000;
-  return { pollCloseAt: now + 3 * min, weatherCheckAt: now + 5 * min, reminderAt: now + 6 * min, outingEndAt: now + 8 * min };
+  return { pollCloseAt: now + 7 * min, weatherCheckAt: now + 9 * min, reminderAt: now + 10 * min, outingEndAt: now + 12 * min };
 }

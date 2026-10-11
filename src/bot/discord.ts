@@ -24,7 +24,7 @@ const COMMANDS = [
   { name: 'forget', description: 'Delete everything Quorum stores about you' },
   { name: 'plan', description: 'Draft options and start the poll',
     options: [
-      { name: 'date', description: 'YYYY-MM-DD, or "test" for a run compressed into ~10 minutes', type: ApplicationCommandOptionType.String, required: true },
+      { name: 'date', description: 'YYYY-MM-DD, or "test" for a run compressed into ~15 minutes', type: ApplicationCommandOptionType.String, required: true },
       { name: 'people', description: 'Yeses needed (default 4, or 2 for test)', type: ApplicationCommandOptionType.Integer, min_value: 1, max_value: 50 },
     ] },
   { name: 'status', description: 'Where the current plan stands' },
